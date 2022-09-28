@@ -12,27 +12,32 @@
 <!--    </el-menu-item>-->
     <el-menu-item index="2" >
       <router-link to="/blogs" class="nav-link"><i class="el-icon-s-home"></i></router-link>
-
     </el-menu-item>
     <el-menu-item index="3">
       <router-link to="/add" class="nav-link"> <i class="el-icon-plus"></i></router-link>
+    </el-menu-item>
+    <el-menu-item index="6">
+      <router-link to="/register" class="nav-link"> <i class="">Register</i></router-link>
     </el-menu-item>
   </el-menu>
 
 </template>
 <script>
+
 export default {
   name: "NavbarComponent",
   data() {
     return {
       activeIndex: '1',
-      activeIndex2: '1'
+      activeIndex2: '1',
+
     };
   },
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     }
-  }
+  },
+
 }
 </script>

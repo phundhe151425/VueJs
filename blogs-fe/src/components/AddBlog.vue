@@ -8,7 +8,7 @@
     <el-form-item label="Content" prop="content">
       <el-input type="textarea" name="content" v-model="blog.content"></el-input>
     </el-form-item>
-    <el-form-item label="Blog covers" prop="cover">
+    <el-form-item label="Blog covers" prop="files">
       <input multiple type="file" name="files">
 
     </el-form-item>
@@ -39,7 +39,7 @@ export default {
       blog:{
         title: '',
         content: '',
-        cover: [],
+        files: [],
         category: '',
         author: ''
       },
@@ -50,7 +50,7 @@ export default {
           { required: true, message: 'Please input title blog', trigger: 'blur' },
           { min: 3, max: 20, message: 'Length should be 3 to 20', trigger: 'blur' }
         ],
-        categoryCode: [
+        category: [
           { required: true, message: 'Please select Category ', trigger: 'change' }
         ],
         content: [
@@ -59,13 +59,14 @@ export default {
       }
     }
   },
-  created: async function () {
-      let response = await BlogService.getCates();
+
+  mounted()  {
+    BlogService.getCates().then(response => {
       this.categories = response.data
-  },
-  mounted: async function () {
-    let response = await BlogService.getAuthors();
-    this.authors = response.data
+    });
+    BlogService.getAuthors().then(response => {
+      this.authors = response.data
+    });
   },
   methods:{
 
@@ -75,7 +76,7 @@ export default {
           let form = document.querySelector('#form-blog');
           console.log(form)
           BlogService.create(form)
-          this.$refs[formName].resetFields()
+          this.$router.push('/blogs')
         }
         else{
           return false;
@@ -85,9 +86,8 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    handleChange(file, fileList) {
-      this.fileList = fileList.slice(-3);
-    },
+
+
 
 
   }

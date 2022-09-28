@@ -4,6 +4,10 @@
       <navbar-component/>
     </el-header>
 
+    <br>
+
+
+
     <el-main>
       <router-view/>
     </el-main>
@@ -17,7 +21,8 @@ import NavbarComponent from "@/components/Navbar";
 export default {
   name: 'App',
   components: {
-    NavbarComponent
+    NavbarComponent,
+
   }
 }
 </script>
@@ -25,5 +30,9 @@ export default {
 <style>
 #app {
   text-decoration: none;
+
 }
+
+
+
 </style>

@@ -1,6 +1,20 @@
 <template>
   <el-container>
+
     <el-main>
+
+      <el-input
+          size="medium"
+          placeholder="Search"
+          v-model="search"
+      style="width: 20%">
+      </el-input>
+
+      &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+      <Authors/>
+      &ensp;&ensp;&ensp;&ensp;&ensp;
+      <Cates/>
+
       <el-table
           :data="blogs"
           style="width: 100%"
@@ -39,8 +53,7 @@
             label="Option">
           <template v-slot:="data">
           <router-link :to="`/blogs/${data.row.id}`"><el-button type="primary" icon="el-icon-edit" circle ></el-button></router-link>
-<!--            <a [routerLink]="['/blogs/']" [queryParams]="{id: data.row.id}"></a>-->
-          <el-button type="danger" icon="el-icon-delete" circle @mouseup="btnDelete(data.row)"></el-button>
+          <el-button type="danger" icon="el-icon-delete" circle @click="btnDelete(data.row)"></el-button>
           </template>
         </el-table-column>
 
@@ -55,37 +68,51 @@
 
 <style>
 .el-table .warning-row {
-  background: oldlace;
+  background:#95a6c9 ;
+  color: black;
 }
 
 .el-table .success-row {
-  background: #f0f9eb;
+  background: #93b9bd;
+  color: black;
 }
 </style>
 
 <script>
 import BlogService from "@/services/BlogService";
+import Cates from "@/components/Cates";
+import Authors from "@/components/Authors";
 
 export default {
   name: "BlogList",
+  components: {
+    Cates,
+    Authors
+  },
   data() {
     return {
       blogs: [],
+      search: ''
     }
 
   },
-  mounted: async function () {
+  beforeCreate() {
     BlogService.getAll().then(response => {
       this.blogs = response.data
     })
   },
+  mounted() {
+    this.getBlogs
+  },
   methods: {
-
     tableRowClassName({rowIndex}) {
       if (rowIndex % 2 == 0) {
         return 'warning-row';
       }
-      return '';
+      else{
+        return 'success-row';
+      }
+      // return '';
     },
 
     btnDelete(row){
@@ -97,9 +124,18 @@ export default {
             })
           })
     }
-
-
   },
+  computed:{
+    getBlogs(){
+      if(this.search){
+        return this.blogs.filter((item)=>{
+          return this.search.toLowerCase().split(' ').every(v => item.title.toLowerCase().includes(v))
+        })
+      }else{
+        return this.blogs
+      }
+    }
+  }
 
 }
 

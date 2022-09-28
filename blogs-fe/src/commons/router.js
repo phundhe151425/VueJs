@@ -22,7 +22,11 @@ export default new Router({
             path:"/blogs/:blogId",
             name:"edit",
             component: () => import("../components/EditBlog")
-
-        }
+        },
+        {
+            path:"/register",
+            name:"register",
+            component: () => import("../components/Register")
+        },
     ]
 })

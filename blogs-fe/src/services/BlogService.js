@@ -27,8 +27,8 @@ class BlogService{
         return httpCommon.delete(`/blogs/${id}`);
     }
 
-    findByTitle(title) {
-        return httpCommon.get(`/blogs?title=${title}`);
+    search(key) {
+        return httpCommon.get(`/blogs/search?key=${key}`);
     }
 
     getCates(){
@@ -38,6 +38,8 @@ class BlogService{
     getAuthors(){
         return httpCommon.get("/authors")
     }
+
+
 }
 
 export default new BlogService()
