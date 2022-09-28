@@ -19,11 +19,11 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Role_Id", nullable = false)
-    private Long Id;
+    private Long id;
 
     @Column(name = "Role_Name", length = 30, nullable = false)
     private String roleName;
 
-    @OneToMany(mappedBy = "role")
-    private Set<RoleUser> roleUsers;
+//    @OneToMany(mappedBy = "role")
+//    private Set<User> users;
 }

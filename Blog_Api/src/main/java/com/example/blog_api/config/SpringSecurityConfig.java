@@ -1,7 +1,7 @@
 package com.example.blog_api.config;
 
 
-import com.example.blog_api.service.UserDetailsServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,27 +20,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //        "com.example.login_demo.service"
 //})
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().loginPage(("/login"))
-                .usernameParameter("username")
-                .passwordParameter("password");
-
-        http.formLogin().defaultSuccessUrl("/api/view/blogs")
-                .failureUrl("/login?error");
-
-        http.csrf().disable();
+        http.csrf().disable()
+                .authorizeHttpRequests()
+                .antMatchers("/**")
+                .permitAll();
     }
 }
