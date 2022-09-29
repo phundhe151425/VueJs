@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,5 +80,22 @@ public class AuthController {
                 registerRequest.role()
         );
         return new RegisterResponse(user.getId(), user.getUserName(), user.getPassword(), user.getRole());
+    }
+
+    record LoginRequest(@JsonProperty("user_name")String userName, String password){}
+
+    record LoginResponse(String token){}
+    @PostMapping("/login")
+    public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
+        var login = authService.login(loginRequest.userName(), loginRequest.password());
+
+        Cookie cookie = new Cookie("refresh_token", login.getRefreshToken().getToken());
+        cookie.setMaxAge(3600);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/api");
+        response.addCookie(cookie);
+        return new LoginResponse(login.getAccessToken().getToken());
+
+
     }
 }

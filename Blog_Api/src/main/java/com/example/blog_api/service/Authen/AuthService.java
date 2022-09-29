@@ -36,4 +36,13 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password do not match");
         return userRepository.save(User.of(userName,passwordEncoder.encode(password), role));
     }
+
+    public Login login(String userName, String password){
+        var user = userRepository.findUserByUserName(userName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "user does not exist"));
+        if(!passwordEncoder.matches(password, user.getPassword()))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "password does not match");
+
+        return Login.of(user.getId(), accessTokenSecret, refreshTokenSecret);
+    }
 }

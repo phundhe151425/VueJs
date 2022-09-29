@@ -13,12 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableWebSecurity
-@EnableTransactionManagement
-//@ComponentScan(basePackages = {
-//        "com.example.login_demo.config",
-//        "com.example.login_demo.service"
-//})
+
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
