@@ -7,7 +7,7 @@ export default new Router({
     mode:"history",
     routes:[
         {
-            path: "/",
+            path: "/blogs",
             alias: "/blogs",
             name: "blogs",
             component: () => import("../components/Blogs")

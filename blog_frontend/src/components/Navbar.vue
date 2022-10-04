@@ -16,18 +16,25 @@
     <el-menu-item index="3">
       <router-link to="/add" class="nav-link"> <i class="el-icon-plus"></i></router-link>
     </el-menu-item>
-    <el-menu-item index="6" style="width: 120px; float: right">
-      <router-link to="/login" class="nav-link"> <i class="el-icon-s-promotion">  Login</i></router-link>
+    <el-menu-item index="6" style="width: 120px; float: right" v-if="!loggedIn">
+      <router-link  to="/login" class="nav-link"> <i class="el-icon-s-promotion">  Login</i></router-link>
     </el-menu-item>
-    <el-menu-item index="6" style="width: 120px; float: right">
+    <el-menu-item index="6" style="width: 120px; float: right" v-if="!loggedIn">
       <router-link to="/register" class="nav-link"> <i class="el-icon-user-solid">  Register</i></router-link>
+    </el-menu-item>
+    <el-menu-item index="6" style="width: 120px; float: right" v-if="loggedIn">
+
+<!--        <i  class="el-icon-user-solid"> </i> Logout-->
+        <a class="nav-link" href @click="logOut" style="text-decoration: none">
+          <i class="el-icon-ice-cream-round">  Logout</i>
+        </a>
+
     </el-menu-item>
 
   </el-menu>
 
 </template>
 <script>
-
 export default {
   name: "NavbarComponent",
   data() {
@@ -37,9 +44,20 @@ export default {
 
     };
   },
+  computed: {
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    },
+
+  },
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
+    },
+    logOut() {
+      this.$store.dispatch('auth/logout');
+      // AuthService.logout()
+      this.$router.push('/login');
     }
   },
 

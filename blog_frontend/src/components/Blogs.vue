@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container >
 
     <el-main>
 
@@ -7,13 +7,25 @@
           size="medium"
           placeholder="Search"
           v-model="search"
+          @input="searchBlogs"
       style="width: 20%">
       </el-input>
+<!--      <el-button type="primary" icon="el-icon-search" @click="searchBlogs">Search</el-button>-->
 
       &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
       <Authors/>
       &ensp;&ensp;&ensp;&ensp;&ensp;
-      <Cates/>
+      <el-form :model="cateid" id="cates" ref="cates">
+        <el-dropdown>
+          <el-button type="primary">
+            Category List<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown" v-model="cateid" @change="blogsByCate">
+            <el-dropdown-item :value="cate.id" v-for="cate in categories" :key="cate.id">{{ cate.name }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-form>
+
 
       <el-table
           :data="blogs"
@@ -80,19 +92,19 @@
 
 <script>
 import BlogService from "@/services/BlogService";
-import Cates from "@/components/Cates";
 import Authors from "@/components/Authors";
 
 export default {
   name: "BlogList",
   components: {
-    Cates,
     Authors
   },
   data() {
     return {
       blogs: [],
-      search: ''
+      search: '',
+      categories: [],
+      cateid: null
     }
 
   },
@@ -101,8 +113,12 @@ export default {
       this.blogs = response.data
     })
   },
+
   mounted() {
-    this.getBlogs
+    BlogService.getCates().then(response => {
+      this.categories = response.data
+      console.log(this.cateid)
+    });
   },
   methods: {
     tableRowClassName({rowIndex}) {
@@ -113,6 +129,20 @@ export default {
         return 'success-row';
       }
       // return '';
+    },
+    searchBlogs(){
+      BlogService.search(this.search).then(response => {
+        this.blogs = response.data
+      })
+
+    },
+
+    blogsByCate(){
+      BlogService.getAll(this.cateid).then(response => {
+        console.log(this.cateid)
+        this.blogs = response.data
+      })
+
     },
 
     btnDelete(row){
@@ -126,15 +156,10 @@ export default {
     }
   },
   computed:{
-    getBlogs(){
-      if(this.search){
-        return this.blogs.filter((item)=>{
-          return this.search.toLowerCase().split(' ').every(v => item.title.toLowerCase().includes(v))
-        })
-      }else{
-        return this.blogs
-      }
-    }
+
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    },
   }
 
 }

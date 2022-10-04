@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import UserService from "@/services/UserService";
+import AuthService from "@/services/AuthService";
 
 export default {
   name: "Register-Form",
@@ -58,7 +58,7 @@ export default {
 
   },
   mounted() {
-    UserService.getRoles().then(response => {
+    AuthService.getRoles().then(response => {
       console.log(response)
       this.roles = response.data
     })
@@ -68,9 +68,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid && this.user.password===this.user.password_confirm) {
           console.log(this.user)
-          UserService.registerUser(this.user)
+          AuthService.registerUser(this.user)
           alert('Register Successfully!');
-          this.$router.push('/blogs')
+          this.$router.push('/login')
         } else {
           console.log('error submit!!');
           return false;

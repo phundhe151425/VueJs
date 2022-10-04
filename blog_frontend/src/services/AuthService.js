@@ -14,14 +14,17 @@ class UserService {
     // }
 
     login(user) {
-        return axios.post(API_URL + '/login', {
-                username: user.username,
+        return axios
+            .post(API_URL + 'login', {
+                user_name: user.name,
                 password: user.password
             })
             .then(response => {
-                if (response.data.accessToken) {
+                console.log(response)
+                if (response.data.token) {
                     localStorage.setItem('user', JSON.stringify(response.data));
                 }
+
                 return response.data;
             });
     }
