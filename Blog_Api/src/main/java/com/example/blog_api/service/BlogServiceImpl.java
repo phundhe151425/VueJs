@@ -4,6 +4,8 @@ package com.example.blog_api.service;
 import com.example.blog_api.Repository.BlogRepository;
 import com.example.blog_api.model.Blog;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,19 +16,21 @@ public class BlogServiceImpl implements BlogService{
     @Autowired
     private BlogRepository blogRepository;
 
-
     public List<Blog> getAll() {
         return blogRepository.findAll();
     }
-
 
     public Optional<Blog> findById(int id) {
         return blogRepository.findById(id);
     }
 
-    public List<Blog> listAllFilter(int id) {
-        return blogRepository.getBlogByCategory_Id(id);
+    public Page<Blog> listAllFilter(int id, Pageable pageable) {
+        return blogRepository.getBlogByCategory_Id(id, pageable);
     }
+
+//    public List<Blog> listAllFilter(int id) {
+//        return blogRepository.getBlogByCategory_Id(id);
+//    }
 
     @Override
     public Blog insert(Blog blog) {
@@ -50,19 +54,13 @@ public class BlogServiceImpl implements BlogService{
         blogRepository.deleteById(id);
     }
 
-//    @Override
-//    public List<Blog> findBySearch(String key) {
-//        return blogRepository.findAllByTitleContainingOrAuthor_NameOrCategoryContainingIgnoreCase(key);
-//    }
-
     @Override
     public List<Blog> findByAuthorName(String authorName) {
         return blogRepository.findBlogsByAuthor_Name(authorName);
     }
 
-    public List<Blog> findBlogsBySearch(String key){
-        return blogRepository.findBlogsBySearch(key);
+    @Override
+    public Page<Blog> findBlogBySearchPage(String key, Pageable pageable) {
+        return blogRepository.findBlogsBySearchPage(key, pageable);
     }
-
-
 }

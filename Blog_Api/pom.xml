@@ -37,6 +37,11 @@
             <version>2.4.5</version>
         </dependency>
         <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
             <!-- JSON Web Token Support -->
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>

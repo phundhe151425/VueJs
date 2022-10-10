@@ -13,13 +13,13 @@
 
     </el-form-item>
     <el-form-item label="Category" prop="category">
-      <el-select name="category" v-model="blog.category" placeholder="Category">
-        <el-option :value="cate.id" v-for="cate in categories"  :key="cate.id">{{cate.name}}</el-option>
+      <el-select name="category" v-model="blog.category" placeholder="Category" >
+        <el-option :value="cate.id"  v-for="cate in categories"  :key="cate.id">{{cate.name}}</el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="Author" prop="author">
       <el-select name="author" v-model="blog.author" placeholder="Author">
-        <el-option :value="author.id" v-for="author in authors"  :key="author.id">{{author.name}}</el-option>
+        <el-option :value="author.id"  v-for="author in authors"  :key="author.id">{{author.name}}</el-option>
       </el-select>
     </el-form-item>
     <el-form-item>

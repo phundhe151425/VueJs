@@ -1,11 +1,9 @@
 package com.example.blog_api.service;
 
 
-import com.example.blog_api.Repository.BlogRepository;
 import com.example.blog_api.model.Blog;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +15,7 @@ public interface BlogService {
 
     public Optional<Blog> findById(int id);
 
-    public List<Blog> listAllFilter(int id);
+    public Page<Blog> listAllFilter(int id, Pageable pageable);
 
     Blog insert(Blog blog);
 
@@ -29,9 +27,10 @@ public interface BlogService {
 
     List<Blog> findByAuthorName(String authorName);
 
+    Page<Blog> findBlogBySearchPage(String key, Pageable pageable);
 
 
-    List<Blog> findBlogsBySearch(String key);
+
 }
 
 

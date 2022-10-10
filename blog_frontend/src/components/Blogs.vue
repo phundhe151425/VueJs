@@ -1,5 +1,5 @@
 <template>
-  <el-container >
+  <el-container>
 
     <el-main>
 
@@ -8,23 +8,27 @@
           placeholder="Search"
           v-model="search"
           @input="searchBlogs"
-      style="width: 20%">
+          style="width: 20%">
       </el-input>
-<!--      <el-button type="primary" icon="el-icon-search" @click="searchBlogs">Search</el-button>-->
+      <!--      <el-button type="primary" icon="el-icon-search" @click="searchBlogs">Search</el-button>-->
 
       &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
       <Authors/>
-      &ensp;&ensp;&ensp;&ensp;&ensp;
-      <el-form :model="cateid" id="cates" ref="cates">
-        <el-dropdown>
-          <el-button type="primary">
-            Category List<i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown" v-model="cateid" @change="blogsByCate">
-            <el-dropdown-item :value="cate.id" v-for="cate in categories" :key="cate.id">{{ cate.name }}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+
+
+      <el-form :model="category" ref="cate">
+        <el-select v-model="category.id" placeholder="Select Category" @change="getBlogs">
+          <el-option value="0" >All</el-option>
+          <el-option
+              v-for="cate in categories"
+              :key="cate.id"
+              :label="cate.name"
+              :value="cate.id">
+          {{cate.name}}</el-option>
+        </el-select>
       </el-form>
+      &ensp;&ensp;&ensp;&ensp;&ensp;
+
 
 
       <el-table
@@ -64,13 +68,22 @@
         <el-table-column
             label="Option">
           <template v-slot:="data">
-          <router-link :to="`/blogs/${data.row.id}`"><el-button type="primary" icon="el-icon-edit" circle ></el-button></router-link>
-          <el-button type="danger" icon="el-icon-delete" circle @click="btnDelete(data.row)"></el-button>
+            <router-link :to="`/blogs/${data.row.id}`">
+              <el-button type="primary" icon="el-icon-edit" circle></el-button>
+            </router-link>
+            <el-button type="danger" icon="el-icon-delete" circle @click="btnDelete(data.row)"></el-button>
           </template>
         </el-table-column>
 
 
       </el-table>
+      <el-pagination
+          small
+          layout="prev, pager, next"
+          :total="totalItems"
+          :page-size="pageSize"
+          @current-change="handlePageChange">
+      </el-pagination>
     </el-main>
 
   </el-container>
@@ -80,7 +93,7 @@
 
 <style>
 .el-table .warning-row {
-  background:#95a6c9 ;
+  background: #95a6c9;
   color: black;
 }
 
@@ -104,58 +117,116 @@ export default {
       blogs: [],
       search: '',
       categories: [],
-      cateid: null
+      category: {
+        id: '',
+        name: ''
+      },
+
+      totalItems: 0,
+      page: 0,
+      pageSize: 5,
+
     }
 
   },
-  beforeCreate() {
-    BlogService.getAll().then(response => {
-      this.blogs = response.data
-    })
+  Created() {
+    // this.getBlogs()
   },
 
   mounted() {
+    this.getBlogs();
     BlogService.getCates().then(response => {
       this.categories = response.data
-      console.log(this.cateid)
     });
   },
   methods: {
+    // getRequestParams( page, pageSize) {
+    //   let params = {};
+    //   if (page) {
+    //     params["page"] = page - 1;
+    //   }
+    //
+    //   if (pageSize) {
+    //     params["pageSize"] = pageSize;
+    //   }
+    //
+    //   return params;
+    // },
+    getBlogs() {
+      const params = {
+        'page': this.page,
+        'pageSize': this.pageSize,
+        'cateid': this.category.id,
+
+      }
+      BlogService.getAll(params).then(response => {
+        console.log("a" + this.category.id)
+        const {blogs, totalItems, page, cateid} = response.data;
+        this.blogs = blogs;
+        this.totalItems = totalItems;
+        this.page = page;
+        this.category.id = cateid
+        console.log("b" + this.category.id)
+      })
+          .catch(error => {
+            console.log(error);
+          })
+    },
     tableRowClassName({rowIndex}) {
       if (rowIndex % 2 == 0) {
         return 'warning-row';
-      }
-      else{
+      } else {
         return 'success-row';
       }
       // return '';
     },
-    searchBlogs(){
-      BlogService.search(this.search).then(response => {
-        this.blogs = response.data
+    handlePageChange(value) {
+      this.page = value - 1;
+      if (this.search !== null) {
+        this.searchBlogs();
+      }
+      if (this.category !== null) {
+        this.getBlogs();
+      }else {
+        this.getBlogs();
+      }
+    },
+
+
+    searchBlogs() {
+      const params = {
+        'page': this.page,
+        'pageSize': this.pageSize,
+        'key': this.search
+      }
+      console.log(params)
+      BlogService.search(params).then(response => {
+        this.blogs = response.data.blogs
+        this.totalItems = response.data.totalItems
+        this.page = response.data.page
       })
+          .catch(error => {
+            console.log(error);
+          })
+    },
+
+    blogsByCate() {
+      // BlogService.getAll(this.cateid).then(response => {
+      //   console.log(this.cateid)
+      //   this.blogs = response.data
+      // })
 
     },
 
-    blogsByCate(){
-      BlogService.getAll(this.cateid).then(response => {
-        console.log(this.cateid)
-        this.blogs = response.data
-      })
-
-    },
-
-    btnDelete(row){
+    btnDelete(row) {
       console.log(row.id)
       BlogService.delete(row.id)
-          .then(() =>{
-            BlogService.getAll().then(response => {
-              this.blogs = response.data
-            })
+          .then(() => {
+            this.getBlogs();
           })
     }
   },
-  computed:{
+  computed: {
 
     loggedIn() {
       return this.$store.state.auth.status.loggedIn;

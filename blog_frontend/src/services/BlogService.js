@@ -13,7 +13,7 @@ class BlogService{
 
     create(data) {
         let fromData = new FormData(data);
-        console.log(fromData);
+        console.log(fromData.values());
         return httpCommon.post("/blogs", fromData);
     }
 
@@ -27,8 +27,8 @@ class BlogService{
         return httpCommon.delete(`/blogs/${id}`);
     }
 
-    search(key) {
-        return httpCommon.get(`/blogs/search?key=${key}`);
+    search(params) {
+        return httpCommon.get(`/blogs/search`, {params});
     }
 
     getCates(){

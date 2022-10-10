@@ -18,15 +18,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/**");
+//        http.csrf().ignoringAntMatchers("/**");
 //        http.httpBasic().authenticationEntryPoint()
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .mvcMatchers(HttpMethod.GET, "/api/blogs").permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
+                .antMatchers("/**").permitAll();
+
     }
 }

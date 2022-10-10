@@ -40,6 +40,10 @@ public class BlogForm {
         this.coverForms = blogFormBuilder.coverForms;
     }
 
+//    public void setCategory(int id) {
+//        category.setId(id);
+//    }
+
     public static class BlogFormBuilder {
         private String title;
 
